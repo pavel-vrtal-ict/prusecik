@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Průsečík — dotazník pro partnery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B222C;
+    --ink-2:#232B36;
+    --ink-3:#2C3540;
+    --paper:#F5F1E7;
+    --paper-2:#ECE5D3;
+    --paper-line:#D9D0B8;
+    --text-on-paper:#2A2620;
+    --muted-on-paper:#6B6455;
+    --accent:#C1893D;
+    --accent-deep:#9C6B27;
+    --accent-soft:#E8C68A;
+    --on-dark:#E8E4D9;
+    --on-dark-muted:#8C94A0;
+    --danger:#A6462F;
+    --danger-soft:#E9D3CB;
+    --radius:14px;
+    --shadow: 0 24px 60px -20px rgba(0,0,0,.55);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1100px 700px at 15% -10%, #26303C 0%, transparent 60%),
+      radial-gradient(900px 600px at 110% 10%, #232B36 0%, transparent 55%),
+      var(--ink);
+    color:var(--on-dark);
+    font-family:'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  #app{
+    min-height:100vh;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:56px 18px 80px;
+  }
+  .display{ font-family:'Fraunces', Georgia, serif; }
+  .mono{ font-family:'IBM Plex Mono', ui-monospace, monospace; letter-spacing:.04em; }
+
+  .stage{ width:100%; max-width:640px; }
+  .stage.wide{ max-width:920px; }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--accent-soft);
+    margin:0 0 14px;
+  }
+
+  .card{
+    background:var(--paper);
+    color:var(--text-on-paper);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:40px 40px 34px;
+    animation:rise .5s cubic-bezier(.2,.7,.2,1);
+  }
+  @media (max-width:600px){ .card{ padding:28px 22px 26px; } }
+
+  @keyframes rise{
+    from{ opacity:0; transform:translateY(14px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .card{ animation:none; }
+    *{ transition:none !important; }
+  }
+
+  h1.hero{
+    font-size:clamp(32px,5vw,46px);
+    line-height:1.05;
+    margin:0 0 6px;
+    font-weight:500;
+    color:var(--on-dark);
+  }
+  h1.hero em{ font-style:italic; color:var(--accent-soft); }
+  .hero-sub{
+    color:var(--on-dark-muted);
+    font-size:15px;
+    margin:0 0 28px;
+    max-width:46ch;
+  }
+
+  .intro-text p{ margin:0 0 14px; line-height:1.65; font-size:15.5px; }
+  .intro-text strong{ color:var(--accent-deep); }
+
+  .divider{ height:1px; background:var(--paper-line); margin:22px 0; border:0; }
+
+  .label-sm{
+    font-size:12px; text-transform:uppercase; letter-spacing:.12em;
+    color:var(--muted-on-paper); margin:0 0 10px; font-weight:500;
+  }
+
+  .chip-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:8px; }
+  .chip{
+    font-family:'IBM Plex Sans', sans-serif;
+    border:1px solid var(--paper-line);
+    background:var(--paper-2);
+    color:var(--text-on-paper);
+    padding:11px 18px;
+    border-radius:999px;
+    font-size:14.5px;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .chip:hover{ border-color:var(--accent); }
+  .chip.selected{ background:var(--accent); border-color:var(--accent); color:#241a0c; font-weight:600; }
+
+  input[type=text], textarea{
+    width:100%;
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:15.5px;
+    color:var(--text-on-paper);
+    background:var(--paper-2);
+    border:1px solid var(--paper-line);
+    border-radius:10px;
+    padding:13px 14px;
+    line-height:1.5;
+    resize:vertical;
+  }
+  input[type=text]:focus, textarea:focus, .chip:focus-visible, .choice-btn:focus-visible, .btn:focus-visible{
+    outline:2px solid var(--accent-deep);
+    outline-offset:2px;
+  }
+  textarea{ min-height:130px; }
+
+  .btn{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:14.5px;
+    font-weight:600;
+    border-radius:9px;
+    padding:12px 22px;
+    border:1px solid transparent;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .btn-primary{ background:var(--accent); color:#241a0c; }
+  .btn-primary:hover{ background:var(--accent-deep); }
+  .btn-primary:disabled{ opacity:.45; cursor:not-allowed; }
+  .btn-ghost{ background:transparent; color:var(--muted-on-paper); border-color:var(--paper-line); }
+  .btn-ghost:hover{ border-color:var(--muted-on-paper); }
+  .btn-dark{ background:var(--ink-2); color:var(--on-dark); }
+  .btn-dark:hover{ background:var(--ink-3); }
+  .btn-danger{ background:transparent; color:var(--danger); border-color:var(--danger-soft); font-weight:500; }
+  .btn-sm{ padding:8px 14px; font-size:13px; }
+
+  .btn-row{ display:flex; gap:12px; margin-top:26px; align-items:center; flex-wrap:wrap; }
+  .btn-row.spread{ justify-content:space-between; }
+
+  /* question view */
+  .qmeta{ display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+  .qnum{ font-size:12px; color:var(--muted-on-paper); }
+  .progress-track{ height:3px; background:var(--paper-line); border-radius:2px; overflow:hidden; margin-bottom:26px; }
+  .progress-fill{ height:100%; background:var(--accent); transition:width .3s ease; }
+
+  .q-text{ font-size:clamp(21px,3vw,25px); line-height:1.35; margin:0 0 10px; font-weight:500; }
+  .q-purpose{ font-size:13.5px; color:var(--muted-on-paper); font-style:italic; margin:0 0 22px; line-height:1.5; }
+
+  .hint-panel{
+    background:#F4EAD7;
+    border:1px solid var(--accent-soft);
+    border-radius:10px;
+    padding:14px 16px;
+    margin-top:16px;
+    font-size:14px;
+    line-height:1.55;
+    display:none;
+  }
+  .hint-panel.show{ display:block; }
+  .hint-panel .hint-label{ font-weight:600; color:var(--accent-deep); font-size:12px; text-transform:uppercase; letter-spacing:.08em; margin-bottom:6px; display:block; }
+
+  .warn-inline{ color:var(--danger); font-size:13px; margin-top:8px; display:none; }
+  .warn-inline.show{ display:block; }
+
+  /* review */
+  .review-item{ border-bottom:1px solid var(--paper-line); padding:16px 0; cursor:pointer; }
+  .review-item:hover .review-q{ color:var(--accent-deep); }
+  .review-item:last-child{ border-bottom:none; }
+  .review-q{ font-weight:600; font-size:14.5px; margin:0 0 6px; }
+  .review-a{ font-size:14px; color:var(--muted-on-paper); white-space:pre-wrap; line-height:1.5; }
+  .review-a.empty{ font-style:italic; color:var(--danger); }
+  .edit-mark{ font-size:11px; color:var(--muted-on-paper); float:right; }
+
+  .note-box{
+    background:var(--paper-2); border-radius:10px; padding:14px 16px; font-size:13.5px;
+    color:var(--muted-on-paper); margin-top:18px; line-height:1.55;
+  }
+
+  .status-msg{ font-size:13px; color:var(--accent-deep); margin-top:10px; min-height:16px; }
+
+  /* admin */
+  .venn-wrap{ display:flex; justify-content:center; margin:6px 0 22px; }
+  .legend{ display:flex; gap:22px; justify-content:center; flex-wrap:wrap; margin-bottom:8px; }
+  .legend-item{ display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--on-dark-muted); }
+  .legend-dot{ width:11px; height:11px; border-radius:50%; display:inline-block; }
+  .legend-item.done{ color:var(--on-dark); }
+
+  .resp-card{ background:var(--paper); color:var(--text-on-paper); border-radius:var(--radius); box-shadow:var(--shadow); margin-bottom:18px; overflow:hidden; }
+  .resp-head{ padding:20px 24px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; gap:12px; flex-wrap:wrap; }
+  .resp-name{ font-family:'Fraunces', serif; font-size:22px; margin:0; }
+  .resp-date{ font-size:12.5px; color:var(--muted-on-paper); margin-top:2px; }
+  .resp-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+  .resp-body{ padding:0 24px 22px; display:none; }
+  .resp-body.open{ display:block; }
+  .resp-qa{ padding:14px 0; border-top:1px solid var(--paper-line); }
+  .resp-qa .rq{ font-weight:600; font-size:14px; margin:0 0 6px; }
+  .resp-qa .ra{ font-size:14px; line-height:1.55; white-space:pre-wrap; }
+  .resp-qa .rtag{ font-size:11px; color:var(--muted-on-paper); }
+
+  .export-box textarea{ min-height:220px; font-family:'IBM Plex Mono', monospace; font-size:12.5px; }
+
+  .lock-card{ max-width:400px; margin:0 auto; text-align:center; }
+  .admin-toolbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:22px; flex-wrap:wrap; gap:12px; }
+
+  .empty-state{ text-align:center; color:var(--on-dark-muted); padding:50px 20px; font-size:14.5px; }
+
+  .choice-list{ display:flex; flex-direction:column; gap:10px; }
+  .choice-btn{
+    font-family:'IBM Plex Sans', sans-serif;
+    width:100%;
+    text-align:left;
+    border:1px solid var(--paper-line);
+    background:var(--paper-2);
+    color:var(--text-on-paper);
+    padding:14px 16px;
+    border-radius:10px;
+    font-size:15px;
+    line-height:1.45;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .choice-btn:hover{ border-color:var(--accent); }
+  .choice-btn.selected{ background:var(--accent); border-color:var(--accent); color:#241a0c; font-weight:600; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* ---------- data ---------- */
+const QUESTIONS = [
+  {id:'energie', q:'Co tě v práci dlouhodobě baví a nabíjí — klidně i mimo obor, ve kterém teď působíš?', purpose:'Hledáme, co tě žene dopředu i po letech, ne jen to, co momentálně umíš.', hint:'Zkus vybrat tři činnosti, které bys chtěl/a dělat opakovaně i po roce. Které by to byly?'},
+  {id:'typ_prace', q:'Jaký typ práce si pro sebe umíš představit jako hlavní náplň — spíš kontakt se zákazníky, příprava na pozadí, řízení lidí a projektů, nebo odborná dodávka?', purpose:'Stejná firma potřebuje různé role. Pomáhá zjistit, kde se kdo přirozeně vidí, bez ohledu na minulou pozici.', hint:'Klidně může jít o kombinaci. Zkus ale odhadnout poměr — co by mělo převažovat a co by mělo být jen doplněk?'},
+  {id:'hranice', q:'Existuje práce nebo typ odpovědnosti, který už dělat nechceš, i kdyby po něm byla poptávka?', purpose:'Hranice jsou stejně důležité jako chutě. Pomáhají předejít budoucím sporům o role.', hint:'Které činnosti bys zvládl/a výjimečně, ale nechtěl/a bys je mít jako běžnou součást práce?'},
+  {id:'uceni', q:'Co by ses byl/a ochoten/ochotna nově naučit — a systematicky v tom růst třeba 3–6 měsíců, i kdyby to ze začátku nebylo komfortní?', purpose:'Budoucí role nemusí vycházet jen z minulosti. Důležité je, kde je skutečná chuť růst, ne jen zvědavost.', hint:'Klidně napiš i něco, co tě jen láká zkusit. Zkus ale odlišit, co by ses učil/a rád/a a co jen z povinnosti.'},
+  {id:'zakaznici_chci', q:'S jakým typem zákazníků by ses chtěl/a při práci potkávat?', purpose:'Pomáhá najít společný cílový trh. Různé odpovědi mezi partnery mohou signalizovat jiné směřování.', hint:'Popiš typ organizace nebo člověka, ne jen obor. Jsou ti bližší školy, obce, malé firmy, neziskovky, ordinace, sociální služby, příspěvkové organizace — nebo úplně jiný typ? A proč?'},
+  {id:'zakaznici_nechci', q:'S jakým typem zákazníků nebo zakázek naopak pracovat nechceš?', purpose:'Negativní vymezení je často přesnější než obecné přání. Pomáhá odhalit budoucí třecí plochy.', hint:'Jaký typ klienta by ti dlouhodobě bral energii, i kdyby dobře platil?'},
+  {id:'mimo_skolstvi', q:'Jak vnímáš práci mimo školství — co by tě na ní lákalo, čeho by ses obával/a, a napadá tě konkrétní oblast nebo problém, který by stál za řešení?', purpose:'Školství může být dobrá reference, ale nemusí uživit firmu. Zajímá nás ochota vykročit ven i směr uvažování — ne hotové řešení.', hint:'I vágní tušení nebo víc možností je v pořádku. A klidně napiš i „ven se mi nechce" — to je také odpověď.'},
+  {id:'obchod', q:'Jaký máš vztah k obchodní stránce věci — oslovovat zákazníky, nabízet službu, říct si o peníze, unést odmítnutí?', purpose:'Bez obchodu firma nežije. Potřebujeme vědět, kdo je ochoten prodávat a kdo by raději pracoval až po získání zakázky.', hint:'Umíš si představit, že bys aktivně oslovoval/a lidi, kteří o nás nikdy neslyšeli? Nebo je tvoje hranice jinde — třeba jednat s teplým kontaktem, ale ne shánět studené kontakty?'},
+  {id:'riziko', q:'Jakou míru nejistoty a rizika jsi ochoten/ochotna nést — časově, finančně, psychicky i vztahově?', purpose:'Rozdílná tolerance rizika mezi partnery je jeden z nejčastějších důvodů rozpadu společných projektů.', hint:'Zkus být konkrétní: jaké riziko je pro tebe ještě přijatelné — například čas bez jistého výsledku, menší příjem, investice do přípravy, nejistota zakázek nebo tlak na vztahy? Co už by bylo za hranou?'},
+  {id:'kapacita_tempo', q:'Kolik reálného času a energie si umíš v nejbližších 3–6 měsících představit věnovat ověřování společného projektu?', purpose:'Pomáhá odlišit zájem od skutečné dostupnosti. Projekt může ztroskotat ne proto, že lidé nechtějí, ale protože každý počítá s jiným tempem.', hint:'Je to pro tebe spíš občasné přemýšlení, pravidelná práce pár hodin týdně, nebo vážná pracovní priorita? Co by ti v tom mohlo bránit?'},
+  {id:'platba', q:'Za jaký konkrétní problém, který umíš nebo chceš pomáhat řešit, by podle tebe byl zákazník ochoten reálně zaplatit?', purpose:'Klíčová obchodní otázka. Odlišuje to, co umíme nebo chceme dělat, od toho, co má tržní hodnotu.', hint:'Představ si konkrétního zákazníka, jeho problém a přibližnou částku. Co by potřeboval vyřešit tak naléhavě, že by za to zaplatil?'},
+  {id:'rozhodovani', q:'Jak si představuješ rozhodování ve čtyřčlenném týmu — o penězích, rolích, odpovědnosti a sporech?', purpose:'Důvěra nestačí. Nedorozumění o pravidlech rozbíjí firmy častěji než špatný byznys.', hint:'Kde bys potřeboval/a mít jasná pravidla hned na začátku? Je něco, u čeho bys chtěl/a mít právo veta? A jak zacházet s tím, když někdo vloží víc času, peněz, kontaktů nebo odpovědnosti než ostatní?'},
+  {id:'smysl', q:'Představ si, že je za půl roku. Co by se muselo stát, abys řekl/a: „Ano, mělo smysl tomu věnovat energii"?', purpose:'Ptáme se na skutečnou motivaci — ale zpětně, přes konkrétní obraz, ne přes deklaraci „proč chci podnikat".', hint:'Zkus to popsat konkrétně: co bys dělal/a, s kým, co by ti to přinášelo? Peníze, svobodu, smysl, jistotu, dobré vztahy, nový začátek — nebo něco jiného?'},
+  {id:'signaly', q:'Co by pro tebe byl signál „pokračovat" — a co signál „zastavit"?', purpose:'Předem určená kritéria brání tomu, aby tým pokračoval jen setrvačností nebo ze slušnosti.', hint:'Zkus u obojího uvést konkrétní důkaz, ne jen pocit. Co by tě přesvědčilo, že to má základ — a co by znamenalo raději to nepouštět?'},
+  {id:'obava', q:'Co tě na myšlence společné firmy s tímhle týmem nejvíc znepokojuje?', purpose:'Otevřená pochybnost je cennější než předstíraný souhlas.', hint:'Klidně i věc, která se netýká byznysu, ale vztahů v týmu.'},
+  {id:'moje_role', q:'Kdybys měl/a být součástí projektu, v čem bys chtěl/a být užitečný/á — a co nechceš, aby se od tebe automaticky čekalo?', purpose:'Role mají vzniknout z chuti a energie, ne z minulých pozic ani z tichých očekávání ostatních.', hint:'Zkus obě strany: co bys nabídl/a rád/a, a jaké očekávání bys chtěl/a hned na začátku odmítnout.'},
+  {id:'stanovisko', type:'choice', q:'Moje aktuální stanovisko', purpose:'Poslední otázka dotazníku — vyplňuje se až po projití všech předchozích, aby respondenta předčasně neukotvila. Brání falešnému konsenzu: každý musí zaujmout explicitní pozici.', choices:['chci pokračovat','chci pokračovat, ale opatrně','zatím nevím','spíše nechci','nechci']}
+];
+const PARTNER_SLOTS = ['Eva','Mili','Marta','Pavel'];
+const ADMIN_PASSPHRASE = 'prusecik';
+
+/* Get a free key at https://web3forms.com (just an email + verify — not a
+   full account/password). Paste it below. The key is explicitly designed by
+   Web3Forms to be safe inside public client-side code: it only routes a
+   submission to your inbox, it grants no account access — unlike a GitHub
+   token or password, which must never go in public code. */
+const WEB3FORMS_ACCESS_KEY = '08539586-8576-4fe5-99d7-6a57bb112296';
+
+async function sendToWeb3Forms(name, exportText){
+  if(!WEB3FORMS_ACCESS_KEY || WEB3FORMS_ACCESS_KEY === 'YOUR_ACCESS_KEY_HERE'){
+    return 'unconfigured';
+  }
+  try{
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        access_key: WEB3FORMS_ACCESS_KEY,
+        subject: `Průsečík — odpověď: ${name}`,
+        from_name: `Průsečík dotazník (${name})`,
+        name: name,
+        message: exportText
+      })
+    });
+    const json = await res.json().catch(()=>null);
+    return (res.ok && json && json.success) ? 'success' : 'error';
+  }catch(e){
+    return 'error';
+  }
+}
+
+/* ---------- state ---------- */
+let state = {
+  mode: 'partner',
+  view: 'welcome',
+  partnerName: '',
+  customName: '',
+  answers: {},
+  currentIndex: 0,
+  nudgeShown: {},
+  adminUnlocked: false,
+  adminResponses: [],
+  expanded: {},
+  pasteStatus: ''
+};
+
+const params = new URLSearchParams(location.search);
+if (params.get('admin') === '1' || location.hash === '#admin') {
+  state.mode = 'admin';
+}
+
+/* ---------- helpers ---------- */
+function escapeHtml(str){
+  return String(str == null ? '' : str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function nl2br(str){ return escapeHtml(str).replace(/\n/g,'<br>'); }
+function wordCount(str){ return (str.trim().match(/\S+/g) || []).length; }
+function isChoiceQuestion(q){ return q.type === 'choice'; }
+function fmtDate(iso){
+  try{ return new Date(iso).toLocaleString('cs-CZ',{day:'numeric',month:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
+  catch(e){ return iso; }
+}
+function el(id){ return document.getElementById(id); }
+
+function copyText(text, statusElId){
+  const status = el(statusElId);
+  function ok(msg){ if(status) status.textContent = msg; }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>ok('Zkopírováno do schránky.')).catch(fallbackCopy);
+  } else {
+    fallbackCopy();
+  }
+  function fallbackCopy(){
+    try{
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      const success = document.execCommand('copy');
+      document.body.removeChild(ta);
+      ok(success ? 'Zkopírováno do schránky.' : 'Nepodařilo se zkopírovat automaticky — označ text níže a zkopíruj ručně (Ctrl+C).');
+    }catch(e){
+      ok('Nepodařilo se zkopírovat automaticky — označ text níže a zkopíruj ručně (Ctrl+C).');
+    }
+  }
+}
+
+function downloadText(filename, text, statusElId){
+  const status = statusElId ? el(statusElId) : null;
+  try{
+    const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    setTimeout(()=>{ if(a.parentNode) document.body.removeChild(a); URL.revokeObjectURL(url); }, 150);
+    if(status) status.textContent = 'Soubor by se měl stáhnout — pokud ne, použij tlačítko Kopírovat.';
+  }catch(e){
+    if(status) status.textContent = 'Stažení se nepovedlo — použij tlačítko Kopírovat.';
+  }
+}
+
+function buildAnswersText(name, submittedAtDisplay, answers){
+  let out = `--- ${name.toUpperCase()}${submittedAtDisplay ? ' (odesláno ' + submittedAtDisplay + ')' : ''} ---\n`;
+  QUESTIONS.forEach((qq,i)=>{
+    out += `\n${i+1}. [${qq.id}] ${qq.q}\n> ${(answers[qq.id]||'(bez odpovědi)').trim()}\n`;
+  });
+  return out;
+}
+
+/* ---------- render root ---------- */
+function render(){
+  const app = el('app');
+  app.innerHTML = (state.mode === 'admin') ? renderAdmin() : renderPartner();
+  afterRender();
+}
+
+function afterRender(){
+  if(state.mode === 'partner' && state.view === 'question'){
+    const ta = el('answerBox');
+    if(ta){
+      ta.value = state.answers[QUESTIONS[state.currentIndex].id] || '';
+      ta.focus();
+      const len = ta.value.length;
+      ta.setSelectionRange(len,len);
+    }
+  }
+  if(state.mode === 'partner' && state.view === 'welcome' && state.partnerName === 'CUSTOM'){
+    const inp = el('customNameInput');
+    if(inp) inp.focus();
+  }
+}
+
+/* ================= PARTNER FLOW ================= */
+
+function renderPartner(){
+  if(state.view === 'question') return partnerQuestion();
+  if(state.view === 'review') return partnerReview();
+  if(state.view === 'submitted') return partnerSubmitted();
+  return partnerWelcome();
+}
+
+function partnerWelcome(){
+  const showCustom = state.partnerName === 'CUSTOM';
+  return `
+  <div class="stage">
+    <p class="eyebrow">Průsečík · dotazník pro partnery</p>
+    <h1 class="hero display">Než začneme <em>plánovat</em>,<br>ověřme si, jestli si rozumíme.</h1>
+    <p class="hero-sub">Upřímný dotazník — asi 25–35 minut, 17 otázek.</p>
+    <div class="card">
+      <div class="intro-text">
+        <p>Než se pustíme do plánování konkrétního byznysu, potřebujeme zjistit něco jednoduššího: jestli si vůbec rozumíme v tom, <strong>proč a jak chceme podnikat</strong>.</p>
+        <p>Tenhle dotazník nemá nikoho přesvědčit, aby řekl ano. Má ukázat, kde se naše představy potkávají — a kde ne. Upřímné „nevím“ nebo „nechci“ je stejně cenná odpověď jako nadšené „ano“.</p>
+        <p>Na konci se tvoje odpovědi samy odešlou Pavlovi e-mailem — nic nemusíš kopírovat ani nikam posílat. (Pro jistotu si je můžeš i zkopírovat nebo stáhnout jako zálohu pro sebe.)</p>
+      </div>
+      <hr class="divider">
+      <p class="label-sm">Kdo vyplňuje?</p>
+      <div class="chip-row" id="chipRow">
+        ${PARTNER_SLOTS.map(n => `<button type="button" class="chip ${state.partnerName===n?'selected':''}" onclick="selectName('${n}')">${n}</button>`).join('')}
+        <button type="button" class="chip ${showCustom?'selected':''}" onclick="selectName('CUSTOM')">Jiné jméno</button>
+      </div>
+      ${showCustom ? `<input type="text" id="customNameInput" placeholder="Napiš své jméno" value="${escapeHtml(state.customName)}" oninput="state.customName=this.value" style="margin-top:10px;">` : ''}
+      <div class="btn-row">
+        <button class="btn btn-primary" ${currentNameValue() ? '' : 'disabled'} onclick="beginFlow()">Začít dotazník</button>
+      </div>
+      <div class="note-box">Nezavírej ani neobnovuj tuhle stránku, dokud dotazník nedokončíš — rozpracované odpovědi se nikam neukládají, jen v této otevřené záložce.</div>
+    </div>
+  </div>`;
+}
+
+function currentNameValue(){
+  return state.partnerName === 'CUSTOM' ? state.customName.trim() : state.partnerName;
+}
+
+function beginFlow(){
+  const name = currentNameValue();
+  if(!name) return;
+  state.answers = {};
+  state.currentIndex = 0;
+  state.nudgeShown = {};
+  state.view = 'question';
+  render();
+}
+
+function selectName(n){
+  state.partnerName = n;
+  if(n !== 'CUSTOM') state.customName = '';
+  render();
+}
+
+function partnerQuestion(){
+  const i = state.currentIndex;
+  const q = QUESTIONS[i];
+  const pct = Math.round(((i) / QUESTIONS.length) * 100);
+  const showHint = !isChoiceQuestion(q) && state.nudgeShown[q.id] === 'open';
+  const answerField = isChoiceQuestion(q)
+    ? `<div class="choice-list" id="choiceList">${q.choices.map((c, ci) => `<button type="button" class="choice-btn ${state.answers[q.id]===c?'selected':''}" onclick="selectChoice(${ci})">${escapeHtml(c)}</button>`).join('')}</div>`
+    : `<textarea id="answerBox" placeholder="Piš volně, klidně i nedokonale…"></textarea>`;
+  const warnText = isChoiceQuestion(q)
+    ? 'Vyber prosím jednu možnost.'
+    : 'Napiš prosím alespoň pár slov — i „nevím“ nebo „nechci“ je v pořádku odpověď, ale musí tam být.';
+  const hintPanel = isChoiceQuestion(q) ? '' : `
+      <div class="hint-panel ${showHint?'show':''}" id="hintPanel">
+        <span class="hint-label">Zkus ještě doplnit</span>
+        ${escapeHtml(q.hint)}
+        <div class="btn-row" style="margin-top:12px;">
+          <button class="btn btn-ghost btn-sm" onclick="closeHint()">Doplním</button>
+          <button class="btn btn-dark btn-sm" onclick="advanceAnyway()">Pokračovat i tak</button>
+        </div>
+      </div>`;
+  return `
+  <div class="stage">
+    <p class="eyebrow">Průsečík · ${escapeHtml(currentNameValue())}</p>
+    <div class="card">
+      <div class="qmeta">
+        <span class="qnum mono">OTÁZKA ${String(i+1).padStart(2,'0')} / ${QUESTIONS.length}</span>
+        <span class="qnum mono">${pct}%</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <p class="q-text display">${escapeHtml(q.q)}</p>
+      <p class="q-purpose">${escapeHtml(q.purpose)}</p>
+      ${answerField}
+      <div class="warn-inline" id="warnInline">${warnText}</div>
+      ${hintPanel}
+      <div class="btn-row spread">
+        <button class="btn btn-ghost" onclick="prevQuestion()" ${i===0?'disabled':''}>← Zpět</button>
+        <button class="btn btn-primary" onclick="tryAdvance()">${i === QUESTIONS.length-1 ? 'Pokračovat na shrnutí' : 'Pokračovat →'}</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function selectChoice(choiceIndex){
+  const q = QUESTIONS[state.currentIndex];
+  state.answers[q.id] = q.choices[choiceIndex];
+  const warn = el('warnInline');
+  if(warn) warn.classList.remove('show');
+  render();
+}
+
+function closeHint(){
+  state.nudgeShown[QUESTIONS[state.currentIndex].id] = 'dismissed';
+  render();
+  const ta = el('answerBox');
+  if(ta) ta.focus();
+}
+
+function tryAdvance(){
+  const q = QUESTIONS[state.currentIndex];
+  let val;
+  if(isChoiceQuestion(q)){
+    val = (state.answers[q.id] || '').trim();
+  } else {
+    val = (el('answerBox').value || '').trim();
+    if(val) state.answers[q.id] = val;
+  }
+  if(!val){
+    el('warnInline').classList.add('show');
+    return;
+  }
+  if(!isChoiceQuestion(q) && wordCount(val) < 8 && state.nudgeShown[q.id] !== 'dismissed' && state.nudgeShown[q.id] !== 'open-confirmed'){
+    state.nudgeShown[q.id] = 'open';
+    render();
+    return;
+  }
+  goNext();
+}
+
+function advanceAnyway(){
+  const q = QUESTIONS[state.currentIndex];
+  state.nudgeShown[q.id] = 'open-confirmed';
+  goNext();
+}
+
+function goNext(){
+  if(state.currentIndex < QUESTIONS.length - 1){
+    state.currentIndex++;
+    state.view = 'question';
+  } else {
+    state.view = 'review';
+  }
+  render();
+}
+
+function prevQuestion(){
+  const q = QUESTIONS[state.currentIndex];
+  if(!isChoiceQuestion(q)){
+    const ta = el('answerBox');
+    const val = ta ? (ta.value || '').trim() : '';
+    if(val) state.answers[q.id] = val;
+  }
+  if(state.currentIndex > 0){
+    state.currentIndex--;
+    render();
+  }
+}
+
+function partnerReview(){
+  const name = currentNameValue();
+  return `
+  <div class="stage">
+    <p class="eyebrow">Průsečík · ${escapeHtml(name)}</p>
+    <h1 class="hero display">Ještě jednou <em>projdi</em> odpovědi</h1>
+    <p class="hero-sub">Klikni na kteroukoli otázku, pokud chceš odpověď upravit.</p>
+    <div class="card">
+      ${QUESTIONS.map((q,i)=>{
+        const a = (state.answers[q.id]||'').trim();
+        return `<div class="review-item" onclick="editFromReview(${i})">
+          <span class="edit-mark">upravit</span>
+          <p class="review-q">${i+1}. ${escapeHtml(q.q)}</p>
+          <p class="review-a ${a?'':'empty'}">${a ? nl2br(a) : 'Bez odpovědi'}</p>
+        </div>`;
+      }).join('')}
+      <div class="note-box">Po kliknutí na "Dokončit" se odpovědi rovnou odešlou Pavlovi e-mailem.</div>
+      <div class="btn-row spread">
+        <button class="btn btn-ghost" onclick="backToLastQuestion()">← Zpět k otázkám</button>
+        <button class="btn btn-primary" onclick="finishFlow()">Dokončit</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function backToLastQuestion(){
+  state.currentIndex = QUESTIONS.length - 1;
+  state.view = 'question';
+  render();
+}
+
+function editFromReview(i){
+  state.currentIndex = i;
+  state.view = 'question';
+  render();
+}
+
+async function finishFlow(){
+  state.finishedAt = fmtDate(new Date().toISOString());
+  state.view = 'submitted';
+  state.sendStatus = 'sending';
+  render();
+  const name = currentNameValue();
+  const exportText = buildAnswersText(name, state.finishedAt, state.answers);
+  state.sendStatus = await sendToWeb3Forms(name, exportText);
+  render();
+}
+
+function partnerSubmitted(){
+  const name = currentNameValue();
+  const exportText = buildAnswersText(name, state.finishedAt, state.answers);
+  const status = state.sendStatus;
+
+  let heading = 'Díky, ' + escapeHtml(name) + '.';
+  let sub = '';
+  let statusBox = '';
+
+  if(status === 'sending'){
+    sub = 'Odesílám tvé odpovědi…';
+    statusBox = `<div class="note-box">Chvilku strpení, odesílám odpovědi Pavlovi e-mailem…</div>`;
+  } else if(status === 'success'){
+    sub = 'Odpovědi jsou na cestě Pavlovi.';
+    statusBox = `<div class="note-box" style="border:1px solid var(--accent-soft);">Odesláno — Pavel dostal tvé odpovědi e-mailem. Dál už nemusíš nic dělat.</div>`;
+  } else {
+    sub = 'Automatické odeslání se nepovedlo — dokonči to prosím ručně.';
+    statusBox = `<div class="note-box" style="color:var(--danger);">Nepodařilo se odeslat automaticky (může to být dočasný výpadek). Zkopíruj text níže nebo si ho stáhni a pošli ho Pavlovi ručně — e-mailem, na Teams, jak vám to vyhovuje.</div>`;
+  }
+
+  return `
+  <div class="stage">
+    <p class="eyebrow">Průsečík · hotovo</p>
+    <h1 class="hero display">${heading}</h1>
+    <p class="hero-sub">${sub}</p>
+    <div class="card">
+      ${statusBox}
+      <p style="margin-top:16px;">Pro jistotu si tu necháváme i zálohu — klidně si text zkopíruj nebo stáhni pro sebe.</p>
+      <div class="btn-row">
+        <button class="btn btn-ghost btn-sm" onclick="copyText(document.getElementById('exportTa').value,'exportStatus')">Kopírovat text odpovědí</button>
+        <button class="btn btn-ghost btn-sm" onclick="downloadText('prusecik-${escapeHtml(name).toLowerCase().replace(/[^a-z0-9]+/gi,'-')}.txt', document.getElementById('exportTa').value, 'exportStatus')">Stáhnout jako soubor</button>
+      </div>
+      <div class="export-box" style="margin-top:12px;">
+        <textarea id="exportTa" readonly>${escapeHtml(exportText)}</textarea>
+      </div>
+      <div class="status-msg" id="exportStatus"></div>
+    </div>
+  </div>`;
+}
+
+/* ================= ADMIN FLOW (paste-based, no storage) ================= */
+
+function renderAdmin(){
+  if(!state.adminUnlocked) return adminLock();
+  return adminDashboard();
+}
+
+function adminLock(){
+  return `
+  <div class="stage">
+    <div class="card lock-card">
+      <p class="eyebrow" style="text-align:center;">Průsečík · správa</p>
+      <h1 class="hero display" style="font-size:26px;">Přístup jen pro Pavla</h1>
+      <p class="hero-sub" style="margin:0 auto 18px;">Zadej heslo pro zobrazení odpovědí.</p>
+      <input type="password" id="adminPass" placeholder="Heslo" onkeydown="if(event.key==='Enter') unlockAdmin()">
+      <div class="btn-row" style="justify-content:center;">
+        <button class="btn btn-primary" onclick="unlockAdmin()">Odemknout</button>
+      </div>
+      <div class="status-msg" id="lockStatus"></div>
+    </div>
+  </div>`;
+}
+
+function unlockAdmin(){
+  const val = el('adminPass').value;
+  if(val === ADMIN_PASSPHRASE){
+    state.adminUnlocked = true;
+    render();
+  } else {
+    el('lockStatus').textContent = 'Špatné heslo.';
+  }
+}
+
+/* Parses one or more pasted "--- NAME (odesláno ...) ---" blocks
+   (exactly the format the partner-side export produces) into
+   {name, submittedAt, answers} objects. */
+function parsePastedBlocks(text){
+  const results = [];
+  const lines = text.split(/\r?\n/);
+  const headerRe = /^---\s*(.+?)\s*(?:\(odesláno\s+(.+?)\)\s*)?---$/i;
+  const qRe = /^(\d+)\.\s*\[([a-zA-Z0-9_]+)\]\s*(.*)$/;
+  const aRe = /^>\s?(.*)$/;
+  let current = null;
+  let currentQ = null;
+
+  function flushQ(){
+    if(current && currentQ){
+      current.answers[currentQ.id] = currentQ.lines.join('\n').trim();
+    }
+    currentQ = null;
+  }
+  function flushPartner(){
+    flushQ();
+    if(current && current.name) results.push(current);
+    current = null;
+  }
+
+  for(const raw of lines){
+    const headerMatch = raw.match(headerRe);
+    if(headerMatch){
+      flushPartner();
+      current = { name: headerMatch[1].trim(), submittedAt: headerMatch[2] ? headerMatch[2].trim() : '', answers: {} };
+      continue;
+    }
+    if(!current) continue;
+    const qMatch = raw.match(qRe);
+    if(qMatch){
+      flushQ();
+      currentQ = { id: qMatch[2], lines: [] };
+      continue;
+    }
+    const aMatch = raw.match(aRe);
+    if(aMatch && currentQ){
+      currentQ.lines.push(aMatch[1]);
+      continue;
+    }
+    if(currentQ && raw.trim() !== ''){
+      currentQ.lines.push(raw);
+    }
+  }
+  flushPartner();
+  return results;
+}
+
+function addPastedResponses(){
+  const ta = el('pasteBox');
+  const raw = ta ? ta.value : '';
+  const parsed = parsePastedBlocks(raw);
+  if(parsed.length === 0){
+    state.pasteStatus = 'Nepodařilo se rozpoznat žádnou odpověď — zkontroluj, jestli je vložený přesně celý text, který partner zkopíroval.';
+    render();
+    return;
+  }
+  const names = [];
+  parsed.forEach(p => {
+    const canonical = PARTNER_SLOTS.find(s => s.toLowerCase() === p.name.toLowerCase());
+    const finalName = canonical || p.name;
+    const idx = state.adminResponses.findIndex(r => r.name.toLowerCase() === finalName.toLowerCase());
+    const entry = { name: finalName, submittedAt: p.submittedAt, answers: p.answers };
+    if(idx >= 0) state.adminResponses[idx] = entry; else state.adminResponses.push(entry);
+    names.push(finalName);
+  });
+  state.pasteStatus = `Přidáno / aktualizováno: ${names.join(', ')}.`;
+  if(el('pasteBox')) el('pasteBox').value = '';
+  render();
+}
+
+function adminDashboard(){
+  const slotStatus = PARTNER_SLOTS.map(n => ({
+    name: n,
+    resp: state.adminResponses.find(r => r.name.toLowerCase() === n.toLowerCase())
+  }));
+  const extras = state.adminResponses.filter(r => !PARTNER_SLOTS.some(n => n.toLowerCase() === r.name.toLowerCase()));
+  const doneCount = slotStatus.filter(s=>s.resp).length + extras.length;
+
+  const allExportText = state.adminResponses.length
+    ? `=== ODPOVĚDI PARTNERŮ — PRŮSEČÍK ===\nSestaveno: ${fmtDate(new Date().toISOString())}\nPočet odpovědí: ${state.adminResponses.length}\n\n` +
+      state.adminResponses.map(r => buildAnswersText(r.name, r.submittedAt, r.answers)).join('\n')
+    : '';
+
+  return `
+  <div class="stage wide">
+    <div class="admin-toolbar">
+      <div>
+        <p class="eyebrow" style="margin-bottom:4px;">Průsečík · správa odpovědí</p>
+        <h1 class="hero display" style="font-size:30px;">Přehled odpovědí</h1>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:24px;">
+      <p class="label-sm" style="margin-bottom:6px;">Vlož text z e-mailu, který ti dorazil</p>
+      <p style="font-size:13.5px;color:var(--muted-on-paper);margin:0 0 12px;">Odpovědi ti chodí automaticky e-mailem (předmět "Průsečík — odpověď: Jméno"). Vlož sem tělo e-mailu — celý text od "1. [energie]..." dál (klidně i víc e-mailů pod sebou najednou). Nic se neukládá na server, data žijí jen v téhle otevřené záložce.</p>
+      <textarea id="pasteBox" placeholder="--- EVA (odesláno ...) ---&#10;&#10;1. [energie] ..." style="min-height:140px;"></textarea>
+      <div class="btn-row">
+        <button class="btn btn-primary btn-sm" onclick="addPastedResponses()">Přidat / aktualizovat</button>
+      </div>
+      <div class="status-msg">${escapeHtml(state.pasteStatus||'')}</div>
+    </div>
+
+    ${venn(slotStatus)}
+
+    <div class="legend">
+      ${slotStatus.map(s => `<span class="legend-item ${s.resp?'done':''}"><span class="legend-dot" style="background:${s.resp ? 'var(--accent)' : 'transparent'};border:1px solid var(--accent-soft);"></span>${escapeHtml(s.name)} — ${s.resp ? 'vloženo' + (s.resp.submittedAt ? ' (odesláno ' + escapeHtml(s.resp.submittedAt) + ')' : '') : 'čeká se'}</span>`).join('')}
+    </div>
+
+    ${state.adminResponses.length ? `
+    <div class="card export-box" style="margin-bottom:24px;">
+      <p class="label-sm" style="margin-bottom:6px;">Export pro AI analýzu (${doneCount} / ${PARTNER_SLOTS.length}${extras.length?'+'+extras.length:''})</p>
+      <p style="font-size:13.5px;color:var(--muted-on-paper);margin:0 0 12px;">Zkopíruj a vlož do chatu s Claude spolu s žádostí o analýzu nebo porovnání odpovědí.</p>
+      <div class="btn-row" style="margin-top:0;">
+        <button class="btn btn-primary btn-sm" onclick="copyText(document.getElementById('allExportTa').value,'allExportStatus')">Kopírovat vše pro AI analýzu</button>
+        <button class="btn btn-ghost btn-sm" onclick="downloadText('prusecik-vsechny-odpovedi.txt', document.getElementById('allExportTa').value, 'allExportStatus')">Stáhnout jako soubor</button>
+      </div>
+      <div style="margin-top:12px;"><textarea id="allExportTa" readonly>${escapeHtml(allExportText)}</textarea></div>
+      <div class="status-msg" id="allExportStatus"></div>
+    </div>` : ''}
+
+    ${state.adminResponses.length === 0 ? `<div class="empty-state">Zatím nikdo neposlal odpovědi. Jakmile ti partner pošle text, vlož ho výše.</div>` : ''}
+
+    ${state.adminResponses.map(r => respCard(r)).join('')}
+  </div>`;
+}
+
+function venn(slotStatus){
+  // 4-way overlapping cluster: Eva top, Mili right, Marta bottom, Pavel left.
+  // Not a mathematically exact 4-set Venn (that needs ellipses) — this is a
+  // deliberately simpler "everyone overlaps in the middle" visual signature.
+  const positions = [
+    {cx:150, cy:82},   // Eva
+    {cx:210, cy:137},  // Mili
+    {cx:150, cy:192},  // Marta
+    {cx:90,  cy:137}   // Pavel
+  ];
+  const circles = slotStatus.map((s,i)=>{
+    const p = positions[i] || positions[positions.length-1];
+    return `<circle cx="${p.cx}" cy="${p.cy}" r="72"
+      fill="${s.resp ? 'var(--accent)' : 'none'}"
+      fill-opacity="${s.resp ? 0.42 : 0}"
+      stroke="${s.resp ? 'var(--accent)' : 'var(--on-dark-muted)'}"
+      stroke-width="1.5"
+      stroke-dasharray="${s.resp ? '0' : '4 4'}" />`;
+  }).join('');
+  return `<div class="venn-wrap"><svg width="300" height="276" viewBox="0 0 300 276" role="img" aria-label="Průsečík odpovědí týmu">${circles}</svg></div>`;
+}
+
+function respCard(r){
+  const open = !!state.expanded[r.name];
+  const exportText = buildAnswersText(r.name, r.submittedAt, r.answers).replace(/`/g,'\\`');
+  return `
+  <div class="resp-card">
+    <div class="resp-head" onclick="toggleCard('${escapeHtml(r.name)}')">
+      <div>
+        <p class="resp-name display">${escapeHtml(r.name)}</p>
+        <p class="resp-date">${r.submittedAt ? 'Odesláno ' + escapeHtml(r.submittedAt) : 'Bez data'} · ${open ? 'skrýt' : 'zobrazit odpovědi'}</p>
+      </div>
+      <div class="resp-actions" onclick="event.stopPropagation()">
+        <button class="btn btn-ghost btn-sm" onclick="copyText(\`${exportText}\`, 'stat-${escapeHtml(r.name)}')">Kopírovat</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteResponse('${escapeHtml(r.name)}')">Odebrat</button>
+      </div>
+    </div>
+    <div class="status-msg" id="stat-${escapeHtml(r.name)}" style="padding:0 24px;"></div>
+    <div class="resp-body ${open?'open':''}">
+      ${QUESTIONS.map((q,i)=>`
+        <div class="resp-qa">
+          <p class="rtag mono">${String(i+1).padStart(2,'0')} · ${q.id}</p>
+          <p class="rq">${escapeHtml(q.q)}</p>
+          <p class="ra">${nl2br((r.answers[q.id]||'(bez odpovědi)'))}</p>
+        </div>
+      `).join('')}
+    </div>
+  </div>`;
+}
+
+function toggleCard(name){
+  state.expanded[name] = !state.expanded[name];
+  render();
+}
+
+function deleteResponse(name){
+  if(!confirm(`Odebrat odpověď od "${name}" z tohoto přehledu? (Text, který ti poslal/a, tím nezmizí — jen ho odebereš odsud.)`)) return;
+  state.adminResponses = state.adminResponses.filter(r => r.name.toLowerCase() !== name.toLowerCase());
+  render();
+}
+
+/* ---------- boot ---------- */
+render();
+</script>
+</body>
+</html>
