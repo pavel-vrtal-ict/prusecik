@@ -436,9 +436,9 @@ function partnerWelcome(){
         ${PARTNER_SLOTS.map(n => `<button type="button" class="chip ${state.partnerName===n?'selected':''}" onclick="selectName('${n}')">${n}</button>`).join('')}
         <button type="button" class="chip ${showCustom?'selected':''}" onclick="selectName('CUSTOM')">Jiné jméno</button>
       </div>
-      ${showCustom ? `<input type="text" id="customNameInput" placeholder="Napiš své jméno" value="${escapeHtml(state.customName)}" oninput="state.customName=this.value" style="margin-top:10px;">` : ''}
+      ${showCustom ? `<input type="text" id="customNameInput" placeholder="Napiš své jméno" value="${escapeHtml(state.customName)}" oninput="state.customName=this.value; updateBeginButton()" onkeydown="if(event.key==='Enter'&&currentNameValue()) beginFlow()" style="margin-top:10px;">` : ''}
       <div class="btn-row">
-        <button class="btn btn-primary" ${currentNameValue() ? '' : 'disabled'} onclick="beginFlow()">Začít dotazník</button>
+        <button type="button" class="btn btn-primary" id="beginBtn" ${currentNameValue() ? '' : 'disabled'} onclick="beginFlow()">Začít dotazník</button>
       </div>
       <div class="note-box">Nezavírej ani neobnovuj tuhle stránku, dokud dotazník nedokončíš — rozpracované odpovědi se nikam neukládají, jen v této otevřené záložce.</div>
     </div>
@@ -447,6 +447,11 @@ function partnerWelcome(){
 
 function currentNameValue(){
   return state.partnerName === 'CUSTOM' ? state.customName.trim() : state.partnerName;
+}
+
+function updateBeginButton(){
+  const btn = el('beginBtn');
+  if(btn) btn.disabled = !currentNameValue();
 }
 
 function beginFlow(){
