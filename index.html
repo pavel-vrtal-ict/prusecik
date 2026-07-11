@@ -481,12 +481,14 @@ function partnerWelcome(){
   <div class="stage">
     <p class="eyebrow">Průsečík · dotazník pro partnery</p>
     <h1 class="hero display">Než začneme <em>plánovat</em>,<br>ověřme si, jestli si rozumíme.</h1>
-    <p class="hero-sub">Upřímný dotazník — asi 25–35 minut, 17 otázek.</p>
+    <p class="hero-sub">17 otázek · asi 25–35 minut · klidně na vícekrát</p>
     <div class="card">
       <div class="intro-text">
-        <p>Než se pustíme do plánování konkrétního byznysu, potřebujeme zjistit něco jednoduššího: jestli si vůbec rozumíme v tom, <strong>proč a jak chceme podnikat</strong>.</p>
-        <p>Tenhle dotazník nemá nikoho přesvědčit, aby řekl ano. Má ukázat, kde se naše představy potkávají — a kde ne. Upřímné „nevím“ nebo „nechci“ je stejně cenná odpověď jako nadšené „ano“.</p>
-        <p>Na konci se tvoje odpovědi samy odešlou Pavlovi e-mailem — nic nemusíš kopírovat ani nikam posílat. (Pro jistotu si je můžeš i zkopírovat nebo stáhnout jako zálohu pro sebe.)</p>
+        <p>Než plánujeme konkrétní firmu, chceme zjistit, jestli si rozumíme v tom, <strong>proč a jak chceme podnikat</strong>. Dotazník nemá nikoho přesvědčovat — upřímné „nevím“ nebo „nechci“ je stejně v pořádku jako „ano“.</p>
+        <p>Na konci se odpovědi samy odešlou Pavlovi e-mailem. Pro jistotu si je můžeš i zkopírovat nebo stáhnout.</p>
+      </div>
+      <div class="note-box" style="margin-top:18px;">
+        <strong>Kde začneš, tam dokončí.</strong> Jde to na počítači i mobilu — vyber si, co ti vyhovuje. Průběh se ukládá jen v tomto prohlížeči na tomto zařízení: můžeš kdykoli odejít a později se vrátit ke stejnému odkazu se stejným jménem. Na jiném zařízení nebo v jiném prohlížeči bys ale musel/a začít znovu.
       </div>
       <hr class="divider">
       <p class="label-sm">Kdo vyplňuje?</p>
@@ -495,12 +497,11 @@ function partnerWelcome(){
         <button type="button" class="chip ${showCustom?'selected':''}" onclick="selectName('CUSTOM')">Jiné jméno</button>
       </div>
       ${showCustom ? `<input type="text" id="customNameInput" placeholder="Napiš své jméno" value="${escapeHtml(state.customName)}" oninput="state.customName=this.value; render()" onkeydown="if(event.key==='Enter'&&currentNameValue()) beginFlow()" style="margin-top:10px;">` : ''}
-      ${draftSummary ? `<div class="note-box" style="margin-top:14px;border:1px solid var(--accent-soft);">Máš uložený rozpracovaný dotazník (${draftSummary.where}, ${draftSummary.answered} odpovědí). Klikni na „Pokračovat“, nebo začni znovu od nuly.</div>` : ''}
+      ${draftSummary ? `<div class="note-box" style="margin-top:14px;border:1px solid var(--accent-soft);">Máš rozpracované odpovědi (${draftSummary.where}). <strong>Pokračovat</strong>, nebo začít znovu?</div>` : ''}
       <div class="btn-row">
         <button type="button" class="btn btn-primary" id="beginBtn" ${currentNameValue() ? '' : 'disabled'} onclick="beginFlow()">${draftSummary ? 'Pokračovat' : 'Začít dotazník'}</button>
-        ${draftSummary ? `<button type="button" class="btn btn-ghost" onclick="beginFlow(true)">Začít znovu od nuly</button>` : ''}
+        ${draftSummary ? `<button type="button" class="btn btn-ghost" onclick="beginFlow(true)">Začít znovu</button>` : ''}
       </div>
-      <div class="note-box">Průběh se ukládá v tomto prohlížeči — můžeš dotazník dokončit i na několikrát, ale vždy se stejným jménem a na stejném zařízení. Po odeslání se uložený průběh smaže.</div>
     </div>
   </div>`;
 }
