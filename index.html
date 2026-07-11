@@ -460,7 +460,11 @@ function afterRender(){
   }
   if(state.mode === 'partner' && state.view === 'welcome' && state.partnerName === 'CUSTOM'){
     const inp = el('customNameInput');
-    if(inp) inp.focus();
+    if(inp){
+      inp.focus();
+      const len = inp.value.length;
+      inp.setSelectionRange(len,len);
+    }
   }
 }
 
