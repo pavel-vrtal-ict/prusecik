@@ -28,7 +28,21 @@ Po první úvaze se ukázalo, že samotný školský trh může mít omezený fi
 - školy mohou být dobrým referenčním prostředím, ale nemusí samy uživit poradenskou firmu,
 - je potřeba zvážit širší trh mimo školství.
 
-Cílem v této fázi není vymyslet hotový nový byznysový nápad. Cílem je nejdřív zjistit, zda mezi budoucími partnery existuje reálný průsečík vize, energie, ochoty nést riziko, preferovaného typu práce a představ o zákaznících.
+Cílem v této fázi není vymyslet hotový nový byznysový nápad ani rozhodnout o založení firmy. Cílem je nejdřív zjistit, zda mezi budoucími partnery existuje reálný průsečík — a v jaké podobě spolupráce: konkrétní zakázka, menší projekt, částečný úvazek, dlouhodobější spolupráce, nebo vůbec nic.
+
+---
+
+## Spektrum možných výsledků (ne jen „založit firmu“)
+
+Dotazník i vyhodnocení mají být otevřené vůči různým formám spolupráce:
+
+- jednorázová nebo opakovaná zakázka,
+- spolupráce na konkrétní činnosti bez společného subjektu,
+- částečný úvazek nebo práce „vedle“,
+- postupné ověřování směru bez závazku,
+- případně v budoucnu společný projekt nebo firma — ale teprve jako jedna z možností, ne jako předpoklad.
+
+Model nesmí z odpovědí automaticky vyvozovat, že tým chce založit firmu nebo podnikat na plný úvazek.
 
 ---
 
@@ -208,7 +222,7 @@ Při vyhodnocení odpovědí partnerů má model sledovat zejména:
 | Rozhodování | Představa pravidel ve čtyřčlenném týmu |
 | Smysl | Co by muselo nastat, aby tomu věnoval energii |
 | Signály | Kritéria pro pokračování vs. zastavení |
-| Obavy | Co ho znepokojuje na společné firmě |
+| Obavy | Co ho znepokojuje na spolupráci s týmem |
 | Role | Co chce nabídnout a co odmítá automaticky očekávat |
 | Stanovisko | Explicitní pozice — pokračovat / opatrně / nevím / spíše ne / ne |
 | Konflikty | Kde se mohou očekávání týmu rozcházet |

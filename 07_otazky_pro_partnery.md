@@ -24,7 +24,7 @@ Pořadí otázek odpovídá pořadí v dotazníku. Export z dotazníku čísluje
 
 **Otázka:** Jaký typ práce si pro sebe umíš představit jako hlavní náplň — spíš kontakt se zákazníky, příprava na pozadí, řízení lidí a projektů, nebo odborná dodávka?
 
-**Smysl:** Stejná firma potřebuje různé role. Pomáhá zjistit, kde se kdo přirozeně vidí, bez ohledu na minulou pozici.
+**Smysl:** Společná spolupráce potřebuje různé role. Pomáhá zjistit, kde se kdo přirozeně vidí, bez ohledu na minulou pozici.
 
 **Doplňující otázka:** Klidně může jít o kombinaci. Zkus ale odhadnout poměr — co by mělo převažovat a co by mělo být jen doplněk?
 
@@ -64,7 +64,7 @@ Pořadí otázek odpovídá pořadí v dotazníku. Export z dotazníku čísluje
 
 **Otázka:** Jak vnímáš práci mimo školství — co by tě na ní lákalo, čeho by ses obával/a, a napadá tě konkrétní oblast nebo problém, který by stál za řešení?
 
-**Smysl:** Školství může být dobrá reference, ale nemusí uživit firmu. Zajímá nás ochota vykročit ven i směr uvažování — ne hotové řešení.
+**Smysl:** Školství může být dobrá reference, ale nemusí stačit jako jediný zdroj práce. Zajímá nás ochota vykročit ven i směr uvažování — ne hotové řešení.
 
 **Doplňující otázka:** I vágní tušení nebo víc možností je v pořádku. A klidně napiš i „ven se mi nechce" — to je také odpověď.
 
@@ -72,7 +72,7 @@ Pořadí otázek odpovídá pořadí v dotazníku. Export z dotazníku čísluje
 
 **Otázka:** Jaký máš vztah k obchodní stránce věci — oslovovat zákazníky, nabízet službu, říct si o peníze, unést odmítnutí?
 
-**Smysl:** Bez obchodu firma nežije. Potřebujeme vědět, kdo je ochoten prodávat a kdo by raději pracoval až po získání zakázky.
+**Smysl:** I menší spolupráce potřebuje někoho, kdo umí oslovit zákazníka. Zjišťujeme, kdo je ochoten prodávat a kdo raději pracuje až po získání zakázky.
 
 **Doplňující otázka:** Umíš si představit, že bys aktivně oslovoval/a lidi, kteří o nás nikdy neslyšeli? Nebo je tvoje hranice jinde — třeba jednat s teplým kontaktem, ale ne shánět studené kontakty?
 
@@ -104,7 +104,7 @@ Pořadí otázek odpovídá pořadí v dotazníku. Export z dotazníku čísluje
 
 **Otázka:** Jak si představuješ rozhodování ve čtyřčlenném týmu — o penězích, rolích, odpovědnosti a sporech?
 
-**Smysl:** Důvěra nestačí. Nedorozumění o pravidlech rozbíjí firmy častěji než špatný byznys.
+**Smysl:** Důvěra nestačí. Nedorozumění o pravidlech rozbíjí společné projekty častěji než špatný nápad.
 
 **Doplňující otázka:** Kde bys potřeboval/a mít jasná pravidla hned na začátku? Je něco, u čeho bys chtěl/a mít právo veta? A jak zacházet s tím, když někdo vloží víc času, peněz, kontaktů nebo odpovědnosti než ostatní?
 
@@ -130,7 +130,7 @@ Pořadí otázek odpovídá pořadí v dotazníku. Export z dotazníku čísluje
 
 ### 15. Největší obava (`obava`)
 
-**Otázka:** Co tě na myšlence společné firmy s tímhle týmem nejvíc znepokojuje?
+**Otázka:** Co tě na myšlence spolupráce s tímhle týmem nejvíc znepokojuje?
 
 **Smysl:** Otevřená pochybnost je cennější než předstíraný souhlas.
 
