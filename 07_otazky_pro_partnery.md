@@ -22,9 +22,9 @@ Pořadí otázek odpovídá pořadí v dotazníku. Export z dotazníku čísluje
 
 ### 2. Typ práce (`typ_prace`)
 
-**Otázka:** Jaký typ práce si pro sebe umíš představit jako hlavní náplň — spíš kontakt se zákazníky, příprava na pozadí, řízení lidí a projektů, nebo odborná dodávka?
+**Otázka:** Jaký typ práce si pro sebe umíš představit, ať by šlo o jednu zakázku nebo delší spolupráci — spíš kontakt se zákazníky, příprava na pozadí, řízení lidí a projektů, nebo odborná dodávka?
 
-**Smysl:** Společná spolupráce potřebuje různé role. Pomáhá zjistit, kde se kdo přirozeně vidí, bez ohledu na minulou pozici.
+**Smysl:** Různá spolupráce potřebuje různé role. Pomáhá zjistit, kde se kdo přirozeně vidí, bez ohledu na minulou pozici.
 
 **Doplňující otázka:** Klidně může jít o kombinaci. Zkus ale odhadnout poměr — co by mělo převažovat a co by mělo být jen doplněk?
 
@@ -102,9 +102,9 @@ Pořadí otázek odpovídá pořadí v dotazníku. Export z dotazníku čísluje
 
 ### 12. Rozhodování ve čtyřech (`rozhodovani`)
 
-**Otázka:** Jak si představuješ rozhodování ve čtyřčlenném týmu — o penězích, rolích, odpovědnosti a sporech?
+**Otázka:** Jak si představuješ rozhodování mezi vámi čtyřmi, když spolu budete něco řešit — o penězích, rolích, odpovědnosti a sporech?
 
-**Smysl:** Důvěra nestačí. Nedorozumění o pravidlech rozbíjí společné projekty častěji než špatný nápad.
+**Smysl:** Důvěra nestačí. Nedorozumění o pravidlech rozbíjí i menší spolupráci častěji než špatný nápad.
 
 **Doplňující otázka:** Kde bys potřeboval/a mít jasná pravidla hned na začátku? Je něco, u čeho bys chtěl/a mít právo veta? A jak zacházet s tím, když někdo vloží víc času, peněz, kontaktů nebo odpovědnosti než ostatní?
 
@@ -112,7 +112,7 @@ Pořadí otázek odpovídá pořadí v dotazníku. Export z dotazníku čísluje
 
 **Otázka:** Představ si, že je za půl roku. Co by se muselo stát, abys řekl/a: „Ano, mělo smysl tomu věnovat energii"?
 
-**Smysl:** Ptáme se na skutečnou motivaci — ale zpětně, přes konkrétní obraz, ne přes deklaraci „proč chci podnikat".
+**Smysl:** Ptáme se na skutečnou motivaci — ale zpětně, přes konkrétní obraz, ne přes deklaraci „proč chci podnikat nebo spolupracovat".
 
 **Doplňující otázka:** Zkus to popsat konkrétně: co bys dělal/a, s kým, co by ti to přinášelo? Peníze, svobodu, smysl, jistotu, dobré vztahy, nový začátek — nebo něco jiného?
 
