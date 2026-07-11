@@ -6,7 +6,9 @@ Interaktivní dotazník pro ověření společného byznysového směru. Než t�
 
 ## Pro partnery
 
-1. Otevři dotazník: **[GitHub Pages URL doplní Pavel po nasazení]**
+**Dotazník:** https://pavel-vrtal-ict.github.io/prusecik/
+
+1. Otevři odkaz výše.
 2. Vyber své jméno a projdi všech 17 otázek.
 3. Na konci se odpovědi automaticky odešlou e-mailem — nic nemusíš kopírovat.
 4. Pro jistotu si můžeš odpovědi i stáhnout nebo zkopírovat jako zálohu.
@@ -15,7 +17,7 @@ Interaktivní dotazník pro ověření společného byznysového směru. Než t�
 
 ## Pro Pavla (správa odpovědí)
 
-- Admin přehled: přidej `?admin=1` k URL (např. `https://tvuj-ucet.github.io/prusecik/?admin=1`)
+- **Admin přehled:** https://pavel-vrtal-ict.github.io/prusecik/?admin=1
 - Odpovědi chodí e-mailem přes Web3Forms; v adminu je lze vložit a exportovat pro AI analýzu
 
 ## Obsah repozitáře
@@ -27,15 +29,6 @@ Interaktivní dotazník pro ověření společného byznysového směru. Než t�
 | `05_znalostni_kontext_tymu.md` | Kontext týmu a pravidla analýzy |
 | `00_README.md` | Návod na založení Claude/ChatGPT projektů |
 | `01–06` | Popisy, instructions a startovací prompty pro AI |
-
-## GitHub Pages
-
-Po pushnutí repozitáře na GitHub:
-
-1. **Settings → Pages**
-2. Source: **Deploy from a branch**
-3. Branch: **main**, folder: **/ (root)**
-4. Ulož — za minutu bude dotazník na `https://<username>.github.io/<repo>/`
 
 ## Lokální náhled
 
