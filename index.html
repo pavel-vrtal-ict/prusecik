@@ -275,6 +275,7 @@ const QUESTIONS = [
 ];
 const PARTNER_SLOTS = ['Eva','Mili','Marta','Pavel'];
 const ADMIN_PASSPHRASE = 'prusecik';
+const DRAFT_STORAGE_PREFIX = 'prusecik-draft-v1-';
 
 /* Get a free key at https://web3forms.com (just an email + verify — not a
    full account/password). Paste it below. The key is explicitly designed by
@@ -385,11 +386,66 @@ function buildAnswersText(name, submittedAtDisplay, answers){
   return out;
 }
 
+function draftStorageKey(name){
+  return DRAFT_STORAGE_PREFIX + name.toLowerCase().trim();
+}
+
+function loadDraft(name){
+  try{
+    const raw = localStorage.getItem(draftStorageKey(name));
+    return raw ? JSON.parse(raw) : null;
+  }catch(e){
+    return null;
+  }
+}
+
+function clearDraft(name){
+  try{ localStorage.removeItem(draftStorageKey(name)); }catch(e){}
+}
+
+function saveDraft(){
+  if(state.mode !== 'partner') return;
+  if(state.view === 'welcome' || state.view === 'submitted') return;
+  const name = currentNameValue();
+  if(!name) return;
+  try{
+    localStorage.setItem(draftStorageKey(name), JSON.stringify({
+      partnerName: state.partnerName,
+      customName: state.customName,
+      answers: state.answers,
+      currentIndex: state.currentIndex,
+      nudgeShown: state.nudgeShown,
+      view: state.view,
+      savedAt: Date.now()
+    }));
+  }catch(e){}
+}
+
+function getDraftSummary(name){
+  const draft = loadDraft(name);
+  if(!draft) return null;
+  const answered = Object.values(draft.answers || {}).filter(v => String(v).trim()).length;
+  if(!answered && draft.view !== 'review') return null;
+  const at = typeof draft.currentIndex === 'number' ? draft.currentIndex + 1 : 1;
+  const where = draft.view === 'review' ? 'shrnutí' : `otázka ${at}/17`;
+  return { draft, answered, where };
+}
+
+function applyDraft(draft){
+  state.partnerName = draft.partnerName || state.partnerName;
+  state.customName = draft.customName || '';
+  state.answers = draft.answers || {};
+  state.currentIndex = typeof draft.currentIndex === 'number' ? draft.currentIndex : 0;
+  state.nudgeShown = draft.nudgeShown || {};
+  state.view = draft.view === 'review' ? 'review' : 'question';
+}
+
 /* ---------- render root ---------- */
 function render(){
   const app = el('app');
   app.innerHTML = (state.mode === 'admin') ? renderAdmin() : renderPartner();
   afterRender();
+  saveDraft();
 }
 
 function afterRender(){
@@ -419,6 +475,8 @@ function renderPartner(){
 
 function partnerWelcome(){
   const showCustom = state.partnerName === 'CUSTOM';
+  const name = currentNameValue();
+  const draftSummary = name ? getDraftSummary(name) : null;
   return `
   <div class="stage">
     <p class="eyebrow">Průsečík · dotazník pro partnery</p>
@@ -436,11 +494,13 @@ function partnerWelcome(){
         ${PARTNER_SLOTS.map(n => `<button type="button" class="chip ${state.partnerName===n?'selected':''}" onclick="selectName('${n}')">${n}</button>`).join('')}
         <button type="button" class="chip ${showCustom?'selected':''}" onclick="selectName('CUSTOM')">Jiné jméno</button>
       </div>
-      ${showCustom ? `<input type="text" id="customNameInput" placeholder="Napiš své jméno" value="${escapeHtml(state.customName)}" oninput="state.customName=this.value; updateBeginButton()" onkeydown="if(event.key==='Enter'&&currentNameValue()) beginFlow()" style="margin-top:10px;">` : ''}
+      ${showCustom ? `<input type="text" id="customNameInput" placeholder="Napiš své jméno" value="${escapeHtml(state.customName)}" oninput="state.customName=this.value; render()" onkeydown="if(event.key==='Enter'&&currentNameValue()) beginFlow()" style="margin-top:10px;">` : ''}
+      ${draftSummary ? `<div class="note-box" style="margin-top:14px;border:1px solid var(--accent-soft);">Máš uložený rozpracovaný dotazník (${draftSummary.where}, ${draftSummary.answered} odpovědí). Klikni na „Pokračovat“, nebo začni znovu od nuly.</div>` : ''}
       <div class="btn-row">
-        <button type="button" class="btn btn-primary" id="beginBtn" ${currentNameValue() ? '' : 'disabled'} onclick="beginFlow()">Začít dotazník</button>
+        <button type="button" class="btn btn-primary" id="beginBtn" ${currentNameValue() ? '' : 'disabled'} onclick="beginFlow()">${draftSummary ? 'Pokračovat' : 'Začít dotazník'}</button>
+        ${draftSummary ? `<button type="button" class="btn btn-ghost" onclick="beginFlow(true)">Začít znovu od nuly</button>` : ''}
       </div>
-      <div class="note-box">Nezavírej ani neobnovuj tuhle stránku, dokud dotazník nedokončíš — rozpracované odpovědi se nikam neukládají, jen v této otevřené záložce.</div>
+      <div class="note-box">Průběh se ukládá v tomto prohlížeči — můžeš dotazník dokončit i na několikrát, ale vždy se stejným jménem a na stejném zařízení. Po odeslání se uložený průběh smaže.</div>
     </div>
   </div>`;
 }
@@ -454,9 +514,24 @@ function updateBeginButton(){
   if(btn) btn.disabled = !currentNameValue();
 }
 
-function beginFlow(){
+function beginFlow(forceNew){
   const name = currentNameValue();
   if(!name) return;
+  if(forceNew){
+    clearDraft(name);
+    state.answers = {};
+    state.currentIndex = 0;
+    state.nudgeShown = {};
+    state.view = 'question';
+    render();
+    return;
+  }
+  const summary = getDraftSummary(name);
+  if(summary){
+    applyDraft(summary.draft);
+    render();
+    return;
+  }
   state.answers = {};
   state.currentIndex = 0;
   state.nudgeShown = {};
@@ -477,7 +552,7 @@ function partnerQuestion(){
   const showHint = !isChoiceQuestion(q) && state.nudgeShown[q.id] === 'open';
   const answerField = isChoiceQuestion(q)
     ? `<div class="choice-list" id="choiceList">${q.choices.map((c, ci) => `<button type="button" class="choice-btn ${state.answers[q.id]===c?'selected':''}" onclick="selectChoice(${ci})">${escapeHtml(c)}</button>`).join('')}</div>`
-    : `<textarea id="answerBox" placeholder="Piš volně, klidně i nedokonale…"></textarea>`;
+    : `<textarea id="answerBox" placeholder="Piš volně, klidně i nedokonale…" oninput="state.answers['${q.id}']=this.value; saveDraft();"></textarea>`;
   const warnText = isChoiceQuestion(q)
     ? 'Vyber prosím jednu možnost.'
     : 'Napiš prosím alespoň pár slov — i „nevím“ nebo „nechci“ je v pořádku odpověď, ale musí tam být.';
@@ -622,6 +697,7 @@ async function finishFlow(){
   const name = currentNameValue();
   const exportText = buildAnswersText(name, state.finishedAt, state.answers);
   state.sendStatus = await sendToWeb3Forms(name, exportText);
+  if(state.sendStatus === 'success') clearDraft(name);
   render();
 }
 
